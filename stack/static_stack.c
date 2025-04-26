@@ -58,8 +58,13 @@ void resetStack(Stack* stack) {
     stack->top = -1;
 }
 
+void destroyStack(Stack* stack) {
+        free(stack->array);
+        free(stack);
+}
+
 int isFull(Stack* stack) {
-    if(stack->top == stack->size) {
+    if(stack->top == stack->size - 1) {
             return 1;
     } else {
             return 0;

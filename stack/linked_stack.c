@@ -6,6 +6,7 @@ void push(Stack* stack, int value);
 int pop(Stack* stack);
 int peek(Stack* stack);
 void resetStack(Stack* stack);
+void destroyStack(Stack* stack);
 int isEmpty(Stack* stack);
 
 typedef struct node {
@@ -38,7 +39,7 @@ void push(Stack* stack, int value) {
 int pop(Stack* stack) {
     if(isEmpty(stack)) {
             printf("Stack Underflow\n");
-            return 0;
+            return -1;
     } else {
             Node* aux = stack->top;
             int value = aux->value;
@@ -54,7 +55,7 @@ int pop(Stack* stack) {
 int peek(Stack* stack) {
     if(isEmpty(stack)) {
             printf("Stack is empty\n");
-            return 0;
+            return -1;
     } else {
             return stack->top->value;
     }
@@ -64,6 +65,11 @@ void resetStack(Stack* stack) {
     while(!isEmpty(stack)) {
             pop(stack);
     }
+}
+
+void destroyStack(Stack* stack) {
+    resetStack(stack);
+    free(stack);
 }
 
 int isEmpty(Stack* stack) {
