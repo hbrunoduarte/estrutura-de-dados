@@ -47,8 +47,7 @@ int seekHead(Queue* queue) {
         printf("Queue is empty\n");
         return -1;
     } else {
-        int last = (queue->head - 1 + queue->size) % queue->size;
-        return queue->array[last];
+        return queue->array[queue->head];
     }
 }
 
@@ -57,7 +56,8 @@ int seekTail(Queue* queue) {
         printf("Queue is empty\n");
         return -1;
     } else {
-        return queue->array[queue->tail];
+        int last = (queue->tail - 1 + queue->size) % queue->size;
+        return queue->array[last];
     }
 }
 
