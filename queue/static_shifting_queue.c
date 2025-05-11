@@ -1,15 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-Queue* createQueue(int size);
-int enqueue(Queue* queue, int value);
-int dequeue(Queue* queue, int* value);
-int seekHead(Queue* queue);
-int seekTail(Queue* queue);
-void resetQueue(Queue* queue);
-int isEmpty(Queue* queue);
-int isFull(Queue* queue);
-
 typedef struct queue {
     int head; //index
     int tail; //index
@@ -32,47 +23,45 @@ int enqueue(Queue* queue, int value) {
     if(isFull(queue)) {
         printf("Queue Overflow\n");
         return 0;
-    } else {
-        queue->array[queue->tail] = value;
-        queue->tail++;
-        return 1;
     }
+    queue->array[queue->tail] = value;
+    queue->tail++;
+    return 1;
 }
 
 int dequeue(Queue* queue, int* value) {
     if(isEmpty(queue)) {
         printf("Queue Underflow\n");
         return 0;
-    } else {
-        *value = queue->array[queue->head];
-
-        for(int i = 1; i < queue->tail; i++) {
-            queue->array[i - 1] = queue->array[i];
-        }
-
-        queue->tail--;
-        queue->head = 0;
-
-        return 1;
     }
+    *value = queue->array[queue->head];
+
+    for(int i = 1; i < queue->tail; i++) {
+        queue->array[i - 1] = queue->array[i];
+    }
+
+    queue->tail--;
+    queue->head = 0;
+
+    return 1;
 }
 
-int seekHead(Queue* queue) {
+int seekHead(Queue* queue, int* value) {
     if(isEmpty(queue)) {
         printf("Queue is empty\n");
-        return -1;
-    } else {
-        return queue->array[queue->head];
+        return 0;
     }
+    *value = queue->array[queue->head];
+    return 1;
 }
 
-int seekTail(Queue* queue) {
+int seekTail(Queue* queue, int* value) {
     if(isEmpty(queue)) {
         printf("Queue is empty\n");
-        return -1;
-    } else {
-        return queue->array[queue->tail-1];
+        return 0;
     }
+    *value = queue->array[queue->tail-1];
+    return 1;
 }
 
 void resetQueue(Queue* queue) {
@@ -87,18 +76,9 @@ void destroyQueue(Queue* queue) {
 }
 
 int isEmpty(Queue* queue) {
-    if(queue->tail == queue->head) {
-        return 1;
-    } else {
-        return 0;
-    }
-
+    return queue->tail == queue->head;
 }
 
 int isFull(Queue* queue) {
-    if(queue->tail == queue->size) {
-        return 1;
-    } else {
-        return 0;
-    }
+    return queue->tail == queue->size;
 }

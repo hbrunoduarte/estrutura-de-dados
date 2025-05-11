@@ -24,41 +24,42 @@ int enqueue(Queue* queue, int value) {
     if(isFull(queue)) {
         printf("Queue Overflow\n");
         return 0;
-    } else {
-        queue->array[queue->tail] = value;
-        queue->tail = nextPosition(queue->tail, queue->size);
-        return 1;
     }
+    queue->array[queue->tail] = value;
+    queue->tail = nextPosition(queue->tail, queue->size);
+    return 1;
+
 }
 
 int dequeue(Queue* queue, int* value) {
     if(isEmpty(queue)) {
         printf("Queue Underflow\n");
         return 0;
-    } else {
-        *value = queue->array[queue->head];
-        queue->head = nextPosition(queue->head, queue->size);
-        return 1;
     }
+    *value = queue->array[queue->head];
+    queue->head = nextPosition(queue->head, queue->size);
+    return 1;
 }
 
-int seekHead(Queue* queue) {
+int seekHead(Queue* queue, int* value) {
     if(isEmpty(queue)) {
         printf("Queue is empty\n");
-        return -1;
-    } else {
-        return queue->array[queue->head];
+        *value = NULL;
+        return 0;
     }
+    *value = queue->array[queue->head];
+    return 1;
 }
 
-int seekTail(Queue* queue) {
+int seekTail(Queue* queue, int* value) {
     if(isEmpty(queue)) {
         printf("Queue is empty\n");
-        return -1;
-    } else {
-        int last = (queue->tail - 1 + queue->size) % queue->size;
-        return queue->array[last];
+        *value = NULL;
+        return 0;
     }
+    int last = (queue->tail - 1 + queue->size) % queue->size;
+    *value = queue->array[last];
+    return 1;
 }
 
 void resetQueue(Queue* queue) {
@@ -76,17 +77,9 @@ int nextPosition(int index, int size) {
 }
 
 int isFull(Queue* queue) {
-    if(nextPosition(queue->tail, queue->size) == queue->head) {
-        return 1;
-    } else {
-        return 0;
-    }
+    return nextPosition(queue->tail, queue->size) == queue->head;
 }
 
 int isEmpty(Queue* queue) {
-    if(queue->head == queue->tail) {
-        return 1;
-    } else {
-        return 0;
-    }
+    return queue->head == queue->tail;
 }
