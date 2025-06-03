@@ -1,13 +1,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+typedef int (*CompareFunc)(void*, void*);
+// a < b   ->   < 0
+// a = b   ->     0
+// a > b   ->   > 0
+
 typedef enum {
     MIN = -1,
     MAX = 1
 } PRIORITY_TYPE;
 
 typedef struct node {
-    int value;
+    void* data;
     struct node* link;
 } Node;
 
@@ -15,20 +20,22 @@ typedef struct queue {
     Node* head;
     Node* tail;
     PRIORITY_TYPE pType;
+    CompareFunc compare;
 } Queue;
 
-Queue* createQueue(PRIORITY_TYPE pType) {
+Queue* createQueue(PRIORITY_TYPE pType, CompareFunc cmp) {
     Queue* newQueue = malloc(sizeof(Queue));
     newQueue->head = NULL;
     newQueue->tail = NULL;
     newQueue->pType = pType;
+    newQueue->compare = cmp;
 
     return newQueue;
 }
 
-void enqueue(int value, Queue* queue) {
+void enqueue(void* data, Queue* queue) {
     Node* newNode = malloc(sizeof(Node));
-    newNode->value = value;
+    newNode->data = data;
     newNode->link = NULL;
 
     if(!queue->head) {
@@ -41,12 +48,13 @@ void enqueue(int value, Queue* queue) {
     Node* current = queue->head;
 
     while(current != NULL) {
+        int cmp = queue->compare(newNode->data, current->data);
 
-        if(queue->pType == MIN && newNode->value <= current->value) {
+        if(queue->pType == MIN && cmp <= 0) {
             break;
         }
 
-        if(queue->pType == MAX && newNode->value >= current->value) {
+        if(queue->pType == MAX && cmp >= 0) {
             break;
         }
 
@@ -67,17 +75,17 @@ void enqueue(int value, Queue* queue) {
     }
 }
 
-int dequeue(Queue* queue, int* value) {
+int dequeue(Queue* queue, void** data) {
     if(!queue->head) {
         printf("Queue underflow\n");
         return 0;
     }
 
     Node* temp = queue->head;
-    *value = temp->value;
+    *data = temp->data;
     queue->head = temp->link;
 
-    if(!queue->head == NULL) {
+    if(queue->head == NULL) {
         queue->tail = NULL;
     }
 
@@ -85,21 +93,21 @@ int dequeue(Queue* queue, int* value) {
     return 1;
 }
 
-int seekHead(Queue* queue, int* value) {
+int seekHead(Queue* queue, void** data) {
     if(!queue->head) {
         printf("Queue is empty\n");
         return 0;
     }
-    *value = queue->head->value;
+    *data = queue->head->data;
     return 1;
 }
 
-int seekTail(Queue* queue, int* value) {
+int seekTail(Queue* queue, void** data) {
     if(!queue->tail) {
         printf("Queue is empty\n");
         return 0;
     }
-    *value = queue->tail->value;
+    *data = queue->tail->data;
     return 1;
 }
 
